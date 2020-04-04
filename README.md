@@ -2,7 +2,9 @@
 Simple example to run python script with capabilities i.e. ambient capability.  
 
 # Reference
-http://man7.org/linux/man-pages/man7/capabilities.7.html
+* http://man7.org/linux/man-pages/man7/capabilities.7.html
+* https://github.com/ContainerSolutions/capabilities-blog
+
 
 # Ambient Capability
        Ambient (since Linux 4.3)
@@ -27,7 +29,8 @@ http://man7.org/linux/man-pages/man7/capabilities.7.html
               
 # Building
 > make
-The make will build required binaries and places it in directory build/
+
+**Note:** The make will build required binaries and places it in directory build/
 
 
 # Running
