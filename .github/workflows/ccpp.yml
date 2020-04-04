@@ -15,5 +15,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: cd
       run: cd src
+      run: ls -l
     - name: make
+      run: pwd
       run: make
