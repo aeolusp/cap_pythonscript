@@ -1,0 +1,74 @@
+#------------------------------------------------------------------------------
+# This sample code demonstrates the use of ambient capability
+# set_ambient -> a binary that simply sets net_bind_service to ambient 
+#                capability and exev's the binary from first argument
+# server -> a simple http server that binds and listen on port 80
+# run.py -> a simple python script that starts server via custom python module
+# proxy.py -> a simple module that internally starts binary from subprocess 
+# 
+# How python sample starts:
+#   run.py -> proxy.py (module) -> subprocess (module) -> server (binary)
+#
+#------------------------------------------------------------------------------
+# check capabilities of set_ambient binariy
+getcap -v *
+
+# set capability on set_ambient binary
+sudo setcap cap_net_bind_service+p set_ambient
+
+
+#------------------------------------------------------------------------------
+# Run set set_ambient binary
+# demo-1: To check semi-privileged environment with bash
+# 1. check current shell capabilities 
+grep -H Cap /proc/$BASHPID/status
+#Note that there shall be no capabilities in inheritable, permitted, 
+#effective and ambient capabilities
+
+# 2. Run the bash shell via proxy binary set_ambient
+./set_ambient /bin/bash
+
+# 3. check capabilities of new bash shell
+grep -H Cap /proc/$BASHPID/status
+# Note that the cap_net_bind_service is added permitted, effective and ambient
+
+# 4. exit from the shell
+exit
+
+
+
+#------------------------------------------------------------------------------
+# demo-2: Running python script
+# 1. check current shell capabilities
+grep -H Cap /proc/$BASHPID/status
+#Note that there shall be no capabilities in inheritable, permitted, 
+#effective and ambient capabilities
+
+# 2. run http server via python script that internally includes modules
+# run.py (script) -> proxy.py (module) -> subprocess (module) -> server (binary) 
+python run.py
+# Note that above command fails as the server binds to port 80 (privileged port)
+
+# 3. Now run same via proxy binary, set_ambient
+./set_ambient /usr/bin/python3 run.py &
+# This time the server starts successfully
+
+# 4. check the run time capabilities
+grep -H Cap /proc/`pidof server`/status
+#although server has no capabilities, it gets ambient capabilities from 
+#parent into permitted, effective and ambient set
+
+# 5. verify server is indeed running and serving
+curl localhost:80
+#the server responds with 'Successfully serving on port 80'
+
+# 6. Stop the server
+kill `pidof server`
+
+#------------------------------------------------------------------------------
+#Conclusion:
+# The ambient capability is by default added execv'd command/binary, if there
+# is no file capability set for the binary. 
+# If the binary has file level capability set, then its effective capability
+# is not same as ambient rather derived from file capability set.
+#------------------------------------------------------------------------------
