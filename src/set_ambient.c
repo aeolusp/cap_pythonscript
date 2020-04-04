@@ -8,34 +8,8 @@
  * (C) 2019 Adrian Mouat <adrian.mouat@container-solutions.com>
  *
  * Released under: GPL v3 or later.
- *
- *
- * Compile using:
- *
- *      gcc ./set_ambient.c -o set_ambient -lcap-ng
- *
- * (requires cap-ng headers, which is in libcap-ng-dev in debian)
- *
- * This program must have the CAP_NET_BIND_SERVICE capability in the permitted 
- * set to run properly.
- *
- * This can be set on the file with:
- *
- *	sudo setcap cap_net_bind_service+p set_ambient
- *
- * To get a shell with CAP_NET_BIND_SERVICE that can be inherited by other 
- * processes:
- *
- *	./set_ambient /bin/bash
- *
- * Verifying that it works:
- *
- * From the bash spawed by set_ambient run
- *
- *	cat /proc/$$/status
- *
- * and have a look at the capabilities (use capsh --decode to interpret the
- * hex).
+ * 
+ * Refer readme for more details...
  */
 
 #include <stdlib.h>
