@@ -16,4 +16,4 @@ jobs:
     - name: cd
       run: cd src
     - name: make
-      run: pwd; make
+      run: make -f src/makefile
